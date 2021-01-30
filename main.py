@@ -1,11 +1,13 @@
 import requests
 from pprint import pprint
+import json
 
 
 def main():
     params = {
         'area': 1,
-        'specialization': '1.221'
+        'specialization': '1.221',
+        'period': 30
     }
     response = requests.get('https://api.hh.ru/vacancies', params=params)
     response.raise_for_status()
