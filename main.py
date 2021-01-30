@@ -20,7 +20,22 @@ def fetch_vacancies(programming_language):
     response.raise_for_status()
     review_result = response.json()
     for vacancy in review_result['items']:
-        pprint(vacancy['salary'])
+        pprint(predict_rub_salary(vacancy))
+
+def predict_rub_salary(vacancy):
+    if not vacancy['salary']:
+        return None
+    from_salary = vacancy['salary']['from']
+    to_salary = vacancy['salary']['to']
+
+    if vacancy['salary']['currency'] != 'RUR':
+        return None
+    if from_salary and to_salary:
+        return (from_salary+to_salary)/2
+    elif from_salary and not to_salary:
+        return from_salary*1.2
+    elif not from_salary and to_salary:
+        return to_salary*0.8
 
 
 if __name__ == '__main__':
