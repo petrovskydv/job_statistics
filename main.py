@@ -3,6 +3,7 @@ from pprint import pprint
 import math
 from dotenv import load_dotenv
 import os
+from terminaltables import AsciiTable
 
 COEFFICIENT_LOWER_SALARY = 1.2
 COEFFICIENT_HIGHER_SALARY = 0.8
@@ -13,7 +14,24 @@ def main():
     superjob_token = os.environ['SUPERJOB_TOKEN']
     programming_languages = ['python', 'java', 'javascript', 'C#', 'C++', 'PHP', 'Typescript', 'Ruby']
     # fetch_headhunter_vacancies(programming_languages)
-    fetch_superjob_vacancies(programming_languages, superjob_token)
+    superjob_vacancies = fetch_superjob_vacancies(programming_languages, superjob_token)
+    show_statistics(superjob_vacancies, 'SuperJob Moscow')
+
+
+def show_statistics(vacancies, title):
+    table_data = [['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']]
+    for programming_language, statistic in vacancies.items():
+        table_data.append(
+            [
+                programming_language,
+                statistic['vacancies_found'],
+                statistic['vacancies_processed'],
+                statistic['average_salary']
+            ]
+        )
+    table = AsciiTable(table_data, title)
+    print()
+    print(table.table)
 
 
 def fetch_superjob_vacancies(programming_languages, superjob_token):
@@ -38,7 +56,7 @@ def fetch_superjob_vacancies(programming_languages, superjob_token):
         vacancies, vacancies_found = fetch_vacancies_for_programming_language_superjob(headers, params,
                                                                                        programming_language)
         vacancy_statistics[programming_language] = calculate_average_salary_for_superjob(vacancies, vacancies_found)
-    pprint(vacancy_statistics)
+    return vacancy_statistics
 
 
 def fetch_vacancies_for_programming_language_superjob(headers, params, programming_language):
