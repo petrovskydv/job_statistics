@@ -40,25 +40,25 @@ def main():
 
 def fetch_headhunter_vacancy_statistics(
         programming_languages, headhunter_region, headhunter_specialization, vacancy_publication_period):
-
     params = {
         'area': headhunter_region,
         'specialization': headhunter_specialization,
         'period': vacancy_publication_period,
-        'page': 0,
+        'page': '',
         'per_page': RESULTS_ON_PAGE_NUMBER,
         'text': ''
     }
     vacancy_statistics = {}
     for programming_language in programming_languages:
         logger.debug(programming_language)
-        vacancies, vacancies_found = fetch_vacancies_for_headhunter(programming_language, params)
+        vacancies, vacancies_found = fetch_vacancies_for_programming_language_for_headhunter(
+            programming_language, params)
         vacancy_statistics[programming_language] = fetch_statistics_for_programming_language(
             vacancies, vacancies_found, predict_rub_salary_for_headhunter)
     return vacancy_statistics
 
 
-def fetch_vacancies_for_headhunter(programming_language, params):
+def fetch_vacancies_for_programming_language_for_headhunter(programming_language, params):
     params['text'] = programming_language
     page = 0
     pages_number = 1
@@ -77,36 +77,8 @@ def fetch_vacancies_for_headhunter(programming_language, params):
     return vacancies, vacancies_found
 
 
-def fetch_statistics_for_programming_language(vacancies, vacancies_found, callback):
-    average_salaries = {'vacancies_found': vacancies_found}
-    salaries = []
-    for vacancy in vacancies:
-        expected_salary = callback(vacancy)
-        if expected_salary:
-            salaries.append(expected_salary)
-    average_salaries['vacancies_processed'] = len(salaries)
-    average_salaries['average_salary'] = int(sum(salaries) / len(salaries))
-    return average_salaries
-
-
-def show_statistics(vacancies, title):
-    table_data = [['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']]
-    for programming_language, statistic in vacancies.items():
-        table_data.append(
-            [
-                programming_language,
-                statistic['vacancies_found'],
-                statistic['vacancies_processed'],
-                statistic['average_salary']
-            ]
-        )
-    table = AsciiTable(table_data, title)
-    print()
-    print(table.table)
-
-
-def fetch_superjob_vacancy_statistics(programming_languages, superjob_token,
-                                      superjob_specialization, superjob_region):
+def fetch_superjob_vacancy_statistics(
+        programming_languages, superjob_token, superjob_specialization, superjob_region):
     params = {
         'keywords[1][srws]': 1,
         'keywords[1][skws]': 'or',
@@ -124,14 +96,14 @@ def fetch_superjob_vacancy_statistics(programming_languages, superjob_token,
     vacancy_statistics = {}
     for programming_language in programming_languages:
         logger.debug(programming_language)
-        vacancies, vacancies_found = fetch_vacancies_for_programming_language_superjob(
+        vacancies, vacancies_found = fetch_vacancies_for_programming_language_for_superjob(
             headers, params, programming_language)
         vacancy_statistics[programming_language] = fetch_statistics_for_programming_language(
             vacancies, vacancies_found, predict_rub_salary_for_superjob)
     return vacancy_statistics
 
 
-def fetch_vacancies_for_programming_language_superjob(headers, params, programming_language):
+def fetch_vacancies_for_programming_language_for_superjob(headers, params, programming_language):
     params['keywords[1][keys]'] = programming_language
     page = 0
     pages_number = 1
@@ -148,6 +120,18 @@ def fetch_vacancies_for_programming_language_superjob(headers, params, programmi
         pages_number = math.ceil(vacancies_found / RESULTS_ON_PAGE_NUMBER)
         page += 1
     return vacancies, vacancies_found
+
+
+def fetch_statistics_for_programming_language(vacancies, vacancies_found, callback):
+    average_salaries = {'vacancies_found': vacancies_found}
+    salaries = []
+    for vacancy in vacancies:
+        expected_salary = callback(vacancy)
+        if expected_salary:
+            salaries.append(expected_salary)
+    average_salaries['vacancies_processed'] = len(salaries)
+    average_salaries['average_salary'] = int(sum(salaries) / len(salaries))
+    return average_salaries
 
 
 def predict_rub_salary_for_superjob(vacancy):
@@ -171,6 +155,22 @@ def predict_salary(salary_from, salary_to):
         return salary_from * COEFFICIENT_LOWER_SALARY
     elif salary_from is None and salary_to is not None:
         return salary_to * COEFFICIENT_HIGHER_SALARY
+
+
+def show_statistics(vacancies, title):
+    table_data = [['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']]
+    for programming_language, statistic in vacancies.items():
+        table_data.append(
+            [
+                programming_language,
+                statistic['vacancies_found'],
+                statistic['vacancies_processed'],
+                statistic['average_salary']
+            ]
+        )
+    table = AsciiTable(table_data, title)
+    print()
+    print(table.table)
 
 
 if __name__ == '__main__':
