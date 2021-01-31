@@ -43,7 +43,13 @@ def fetch_superjob_vacancies(programming_languages):
         pages_number = math.ceil(vacancies_found / results_number)
         page += 1
         for vacancy in vacancies:
-            print(vacancy['profession'], vacancy['town']['title'])
+            print(vacancy['profession'], vacancy['town']['title'], predict_rub_salary_for_superjob(vacancy))
+
+
+def predict_rub_salary_for_superjob(vacancy):
+    if vacancy['currency'] != 'rub':
+        return None
+    return predict_salary(vacancy['payment_from'], vacancy['payment_to'])
 
 
 def fetch_headhunter_vacancies(programming_languages):
@@ -98,17 +104,18 @@ def calculate_average_salary(vacancies, vacancies_found):
 def predict_rub_salary(vacancy):
     if not vacancy['salary']:
         return None
-    from_salary = vacancy['salary']['from']
-    to_salary = vacancy['salary']['to']
-
     if vacancy['salary']['currency'] != 'RUR':
         return None
-    if from_salary and to_salary:
-        return (from_salary + to_salary) / 2
-    elif from_salary and not to_salary:
-        return from_salary * COEFFICIENT_LOWER_SALARY
-    elif not from_salary and to_salary:
-        return to_salary * COEFFICIENT_HIGHER_SALARY
+    return predict_salary(vacancy['salary']['from'], vacancy['salary']['to'])
+
+
+def predict_salary(salary_from, salary_to):
+    if salary_from and salary_to:
+        return (salary_from + salary_to) / 2
+    elif salary_from and not salary_to:
+        return salary_from * COEFFICIENT_LOWER_SALARY
+    elif not salary_from and salary_to:
+        return salary_to * COEFFICIENT_HIGHER_SALARY
 
 
 if __name__ == '__main__':
