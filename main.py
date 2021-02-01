@@ -34,8 +34,8 @@ def main():
     logger.info('getting statistics for SuperJob')
     superjob_languages_statistics = fetch_superjob_vacancy_statistics(
         programming_languages, superjob_token, superjob_specialization, superjob_region)
-    show_statistics(headhunter_languages_statistics, 'HeadHunter Moscow')
-    show_statistics(superjob_languages_statistics, 'SuperJob Moscow')
+    print(get_statistics_table(headhunter_languages_statistics, 'HeadHunter Moscow'))
+    print(get_statistics_table(superjob_languages_statistics, 'SuperJob Moscow'))
 
 
 def fetch_headhunter_vacancy_statistics(
@@ -153,7 +153,7 @@ def predict_salary(salary_from, salary_to):
         return salary_to * COEFFICIENT_HIGHER_SALARY
 
 
-def show_statistics(vacancies, title):
+def get_statistics_table(vacancies, title):
     table_data = [['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']]
     for programming_language, statistic in vacancies.items():
         table_data.append(
@@ -164,9 +164,7 @@ def show_statistics(vacancies, title):
                 statistic['average_salary']
             ]
         )
-    table = AsciiTable(table_data, title)
-    print()
-    print(table.table)
+    return AsciiTable(table_data, title)
 
 
 if __name__ == '__main__':
