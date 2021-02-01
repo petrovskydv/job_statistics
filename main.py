@@ -27,13 +27,16 @@ def main():
     vacancy_publication_period = 30
     superjob_region = 4
     superjob_specialization = 48
+    superjob_search_area_code = 1
 
     logger.info('getting statistics for HeadHunter')
     headhunter_languages_statistics = fetch_headhunter_vacancy_statistics(
         programming_languages, headhunter_region, headhunter_specialization, vacancy_publication_period)
+
     logger.info('getting statistics for SuperJob')
     superjob_languages_statistics = fetch_superjob_vacancy_statistics(
-        programming_languages, superjob_token, superjob_specialization, superjob_region)
+        programming_languages, superjob_token, superjob_specialization, superjob_region, superjob_search_area_code)
+
     print(get_statistics_table(headhunter_languages_statistics, 'HeadHunter Moscow'))
     print(get_statistics_table(superjob_languages_statistics, 'SuperJob Moscow'))
 
@@ -76,9 +79,9 @@ def fetch_vacancies_for_programming_language_for_headhunter(programming_language
 
 
 def fetch_superjob_vacancy_statistics(
-        programming_languages, superjob_token, superjob_specialization, superjob_region):
+        programming_languages, superjob_token, superjob_specialization, superjob_region, superjob_search_area_code):
     params = {
-        'keywords[1][srws]': 1,
+        'keywords[1][srws]': superjob_search_area_code,
         'keywords[1][skws]': 'or',
         'count': RESULTS_ON_PAGE_NUMBER,
         'catalogues': superjob_specialization,
