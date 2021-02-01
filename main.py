@@ -64,11 +64,11 @@ def fetch_vacancies_for_programming_language_for_headhunter(programming_language
     vacancies = []
     while page < pages_number:
         params['page'] = page
-        logger.debug(f'processed page {page}')
         response = requests.get('https://api.hh.ru/vacancies', params=params)
         response.raise_for_status()
         review_result = response.json()
         vacancies.extend(review_result['items'])
+        logger.debug(f'processed page {page}')
         pages_number = review_result['pages']
         vacancies_found = review_result['found']
         page += 1
@@ -107,11 +107,11 @@ def fetch_vacancies_for_programming_language_for_superjob(headers, params, progr
     vacancies_found = 0
     while page < pages_number:
         params['page'] = page
-        logger.debug(f'processed page {page}')
         response = requests.get('https://api.superjob.ru/2.0/vacancies', params=params, headers=headers)
         response.raise_for_status()
         review_result = response.json()
         vacancies.extend(review_result['objects'])
+        logger.debug(f'processed page {page}')
         vacancies_found = review_result['total']
         pages_number = math.ceil(vacancies_found / RESULTS_ON_PAGE_NUMBER)
         page += 1
