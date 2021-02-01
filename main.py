@@ -145,11 +145,11 @@ def predict_rub_salary_for_headhunter(vacancy):
 
 
 def predict_salary(salary_from, salary_to):
-    if salary_from is not None and salary_to is not None:
+    if salary_from and salary_to:
         return (salary_from + salary_to) / 2
-    elif salary_from is not None and salary_to is None:
+    elif salary_from and not salary_to:
         return salary_from * COEFFICIENT_LOWER_SALARY
-    elif salary_from is None and salary_to is not None:
+    elif not salary_from and salary_to:
         return salary_to * COEFFICIENT_HIGHER_SALARY
 
 
