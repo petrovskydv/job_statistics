@@ -118,11 +118,11 @@ def fetch_vacancies_for_programming_language_for_superjob(headers, params, progr
     return vacancies, vacancies_found
 
 
-def fetch_statistics_for_programming_language(vacancies, vacancies_found, callback):
+def fetch_statistics_for_programming_language(vacancies, vacancies_found, predict_rub_salary_function):
     average_salaries = {'vacancies_found': vacancies_found}
     salaries = []
     for vacancy in vacancies:
-        expected_salary = callback(vacancy)
+        expected_salary = predict_rub_salary_function(vacancy)
         if expected_salary:
             salaries.append(expected_salary)
     average_salaries['vacancies_processed'] = len(salaries)
