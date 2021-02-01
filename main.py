@@ -44,9 +44,7 @@ def fetch_headhunter_vacancy_statistics(
         'area': headhunter_region,
         'specialization': headhunter_specialization,
         'period': vacancy_publication_period,
-        'page': '',
         'per_page': RESULTS_ON_PAGE_NUMBER,
-        'text': ''
     }
     vacancy_statistics = {}
     for programming_language in programming_languages:
@@ -82,8 +80,6 @@ def fetch_superjob_vacancy_statistics(
     params = {
         'keywords[1][srws]': 1,
         'keywords[1][skws]': 'or',
-        'keywords[1][keys]': '',
-        'page': 0,
         'count': RESULTS_ON_PAGE_NUMBER,
         'catalogues': superjob_specialization,
         'town': superjob_region
