@@ -37,8 +37,10 @@ def main():
     superjob_languages_statistics = fetch_superjob_vacancy_statistics(
         programming_languages, superjob_token, superjob_specialization, superjob_region, superjob_search_area_code)
 
-    print(get_statistics_table(headhunter_languages_statistics, 'HeadHunter Moscow'))
-    print(get_statistics_table(superjob_languages_statistics, 'SuperJob Moscow'))
+    print()
+    print(get_statistics_table(headhunter_languages_statistics, 'HeadHunter Moscow').table)
+    print()
+    print(get_statistics_table(superjob_languages_statistics, 'SuperJob Moscow').table)
 
 
 def fetch_headhunter_vacancy_statistics(
