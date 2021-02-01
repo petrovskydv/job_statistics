@@ -14,7 +14,7 @@ RESULTS_ON_PAGE_NUMBER = 100
 
 
 def main():
-    logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger.setLevel(logging.INFO)
 
     load_dotenv()
